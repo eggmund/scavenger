@@ -83,7 +83,7 @@ impl RequestHandler {
                                     );
                                 } else {
                                     log_submission_accepted(
-                                        submission_params.account_id,
+                                        // submission_params.account_id,
                                         submission_params.nonce,
                                         submission_params.deadline,
                                     );
@@ -202,10 +202,14 @@ fn log_submission_not_accepted(
     );
 }
 
-fn log_submission_accepted(account_id: u64, nonce: u64, deadline: u64) {
+fn log_submission_accepted(nonce: u64, deadline: u64) {
+    // info!(
+    //     "deadline accepted: account={}, nonce={}, deadline={}, human deadline = {}",
+    //     account_id, nonce, deadline, humantime::format_duration(Duration::new(deadline, 0)).to_string()
+    // );
     info!(
-        "deadline accepted: account={}, nonce={}, deadline={}",
-        account_id, nonce, deadline
+        "deadline accepted: nonce={}, deadline={}, human deadline = {}",
+        nonce, deadline, humantime::format_duration(Duration::new(deadline, 0)).to_string()
     );
 }
 
