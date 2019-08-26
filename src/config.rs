@@ -88,6 +88,9 @@ pub struct Cfg {
     #[serde(default = "default_logfile_log_level")]
     pub logfile_log_level: String,
 
+    #[serde(default = "default_logfile_folder")]
+    pub logfile_folder: String,
+
     #[serde(default = "default_logfile_max_count")]
     pub logfile_max_count: u32,
 
@@ -213,6 +216,10 @@ fn default_console_log_level() -> String {
 
 fn default_logfile_log_level() -> String {
     "Warn".to_owned()
+}
+
+fn default_logfile_folder() -> String {
+    "./log/".to_owned()
 }
 
 fn default_logfile_max_count() -> u32 {

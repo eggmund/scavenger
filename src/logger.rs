@@ -23,6 +23,14 @@ fn to_log_level(s: &str, default: log::LevelFilter) -> log::LevelFilter {
 }
 
 pub fn init_logger(cfg: &Cfg) -> log4rs::Handle {
+    use std::path::Path;
+
+    let logfile_folder = Path::new(&cfg.logfile_folder);
+    if !logfile_folder.exists() {
+        error!("Log file save folder does not exist: {}", &cfg.logfile_folder);
+        std::process::exit(1);
+    }
+
     let level_console = to_log_level(&cfg.console_log_level, log::LevelFilter::Info);
     let level_logfile = to_log_level(&cfg.logfile_log_level, log::LevelFilter::Warn);
     let mut console_log_pattern = if cfg.show_progress {
@@ -44,7 +52,7 @@ pub fn init_logger(cfg: &Cfg) -> log4rs::Handle {
 
     let roller = FixedWindowRoller::builder()
         .base(1)
-        .build("log/scavenger.{}.log", cfg.logfile_max_count)
+        .build(logfile_folder.join("scavenger.{}.log").as_os_str().to_str().unwrap(), cfg.logfile_max_count)
         .unwrap();
     let trigger = SizeTrigger::new(&cfg.logfile_max_size * 1024 * 1024);
     let policy = Box::new(CompoundPolicy::new(Box::new(trigger), Box::new(roller)));
@@ -61,7 +69,7 @@ pub fn init_logger(cfg: &Cfg) -> log4rs::Handle {
     } else {
         let logfile = RollingFileAppender::builder()
             .encoder(Box::new(PatternEncoder::new(&logfile_log_pattern)))
-            .build("log/scavenger.1.log", policy)
+            .build(logfile_folder.join("scavenger.1.log").as_os_str().to_str().unwrap(), policy)
             .unwrap();
         Config::builder()
             .appender(

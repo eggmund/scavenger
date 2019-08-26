@@ -11,6 +11,7 @@ use std::u64;
 use tokio;
 use tokio::runtime::TaskExecutor;
 use url::Url;
+use yansi::Paint;
 
 #[derive(Clone)]
 pub struct RequestHandler {
@@ -196,9 +197,12 @@ fn log_submission_not_accepted(
     msg: &str,
 ) {
     error!(
-        "submission not accepted: height={}, account={}, nonce={}, \
-         deadline={}\n\tcode: {}\n\tmessage: {}",
-        height, account_id, nonce, deadline, err_code, msg,
+        "{}",
+        Paint::red(format!(
+            "submission not accepted: height={}, account={}, nonce={}, \
+            deadline={}\n\tcode: {}\n\tmessage: {}",
+            height, account_id, nonce, deadline, err_code, msg,
+        )).bold()
     );
 }
 
@@ -208,8 +212,11 @@ fn log_submission_accepted(nonce: u64, deadline: u64) {
     //     account_id, nonce, deadline, humantime::format_duration(Duration::new(deadline, 0)).to_string()
     // );
     info!(
-        "deadline accepted: nonce={}, deadline={}, human deadline = {}",
-        nonce, deadline, humantime::format_duration(Duration::new(deadline, 0)).to_string()
+        "{}",
+        Paint::green(format!(
+            "deadline accepted: nonce={}, deadline={}, human deadline = {}",
+            nonce, deadline, humantime::format_duration(Duration::new(deadline, 0)).to_string()
+        )).bold()
     );
 }
 
